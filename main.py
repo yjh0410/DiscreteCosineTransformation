@@ -2,6 +2,8 @@ import os
 import cv2
 import numpy as np
 import torch
+import time
+
 from dct import DCTransform, DCTransformTroch
 
 
@@ -80,3 +82,26 @@ max_v = np.max(my_recover_masks[1].numpy())
 min_v = np.min(my_recover_masks[1].numpy())
 my_recover_mask_1 = np.where(my_recover_masks[1].numpy()>(max_v+min_v) / 2., 255, 0)
 cv2.imwrite(save_path_my_torch + '/my_recover_2.png', my_recover_mask_1)
+
+# =================== test encode time ==========================
+t0 = time.time()
+
+for i in range(3000):
+    cv2_coeffs_1 = cv2.dct(tgt_mask_1)
+print("OpenCV encode time: {} ms.".format((time.time() - t0)*1000))
+
+tgt_masks = np.stack([tgt_mask_1]*3000)
+t0 = time.time()
+my_coeffs = mydct_np.dct(tgt_masks)
+print("Numpy encode time: {} ms.".format((time.time() - t0)*1000))
+
+if torch.cuda.is_available():
+    device = torch.device('cuda')
+else:
+    device = torch.device('cpu')
+mydct_torch = DCTransformTroch(vmax=vmax, hmax=hmax, device=device)
+tgt_masks = torch.from_numpy(np.stack([tgt_mask_1]*3000))
+t0 = time.time()
+my_coeffs = mydct_torch.dct(tgt_masks)
+print("Torch encode time: {} ms.".format((time.time() - t0)*1000))
+
