@@ -100,7 +100,7 @@ if torch.cuda.is_available():
 else:
     device = torch.device('cpu')
 mydct_torch = DCTransformTroch(vmax=vmax, hmax=hmax, device=device)
-tgt_masks = torch.from_numpy(np.stack([tgt_mask_1]*3000))
+tgt_masks = torch.from_numpy(np.stack([tgt_mask_1]*3000)).to(device)
 t0 = time.time()
 my_coeffs = mydct_torch.dct(tgt_masks)
 print("Torch encode time: {} ms.".format((time.time() - t0)*1000))
