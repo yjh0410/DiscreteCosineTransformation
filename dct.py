@@ -105,7 +105,7 @@ class DCTransformTroch(object):
         # generate transform matrix
         seq_len = self.seq_len
         sequence_1 = torch.arange(seq_len, dtype=torch.float32).reshape(seq_len, 1) # [N, 1]
-        sequence_2 = ((2. * sequence_1 + 1) * torch.pi).view(1, seq_len) / (2. * seq_len)  # [1, N]
+        sequence_2 = ((2. * sequence_1 + 1) * np.pi).view(1, seq_len) / (2. * seq_len)  # [1, N]
 
         # [N, 1] x [1, N] = [N, N]
         transform_matrix = torch.cos(sequence_1 @ sequence_2)
